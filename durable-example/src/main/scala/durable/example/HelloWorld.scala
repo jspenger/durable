@@ -12,10 +12,10 @@ object HelloWorld {
 
   def main(args: Array[String]): Unit = {
 
-    val workflow = DWorkflow.apply { Spork.apply {
-      DFuture.apply { Spork.apply {
+    val workflow = DWorkflow.apply { SporkBuilder.apply {
+      DFuture.apply { SporkBuilder.apply {
         ctx.log("Hello, ")
-      }}.onComplete { Spork.apply { _ =>
+      }}.onComplete { SporkBuilder.apply { _ =>
         ctx.log("World!")
       }}
     }}

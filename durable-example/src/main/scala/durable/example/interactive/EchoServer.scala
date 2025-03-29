@@ -89,7 +89,7 @@ object EchoServer:
   inline def sleep = Thread.sleep(1_000)
 
   def listen(history: List[String])(using DExecutionContext): DFuture[Unit] = DFuture {
-    Spork.applyWithEnv(history) { history =>
+    SporkBuilder.applyWithEnv(history) { history =>
       sleep
       ctx.log("Listening on " + host + ":" + port)
       server.next match
@@ -115,7 +115,7 @@ object EchoServer:
   }
 
   val workflow = DWorkflow {
-    Spork.apply {
+    SporkBuilder.apply {
       listen(List.empty)
     }
   }

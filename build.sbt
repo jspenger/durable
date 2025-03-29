@@ -28,8 +28,8 @@ lazy val root = project
   .settings(
     name := "durable",
     resolvers += "jitpack" at "https://jitpack.io",
-    libraryDependencies += "com.github.jspenger" % "sporks3" % "main-SNAPSHOT",
-    // libraryDependencies += "com.jspenger" %% "sporks3" % sporksVersion,
+    // libraryDependencies += "com.github.jspenger" % "sporks3" % "main-SNAPSHOT",
+    libraryDependencies += "com.jspenger" %% "sporks3" % sporksVersion,
     libraryDependencies += "com.lihaoyi" %% "upickle" % upickleVersion,
     libraryDependencies += "com.novocode" % "junit-interface" % junitInterfaceVersion % Test,
   )

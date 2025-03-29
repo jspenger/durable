@@ -24,19 +24,19 @@ import durable.given
 
 object Fibonacci {
   def fib(n: Int)(using DExecutionContext): DFuture[Int] = n match
-    case 0 => DFuture { Spork.apply { 0 } }
-    case 1 => DFuture { Spork.apply { 1 } }
+    case 0 => DFuture { SporkBuilder.apply { 0 } }
+    case 1 => DFuture { SporkBuilder.apply { 1 } }
     case _ =>
-      fib(n - 1).flatMap { Spork.applyWithEnv(n) { n => n1 =>
-        fib(n - 2).map { Spork.applyWithEnv(n1) { n1 => n2 =>
+      fib(n - 1).flatMap { SporkBuilder.applyWithEnv(n) { n => n1 =>
+        fib(n - 2).map { SporkBuilder.applyWithEnv(n1) { n1 => n2 =>
           n1 + n2
         }}
       }}
 
   def main(args: Array[String]): Unit = {
     val n = 10
-    val workflow = DWorkflow { Spork.applyWithEnv(n) { n =>
-      fib(n).onComplete { Spork.applyWithEnv(n) { n => result =>
+    val workflow = DWorkflow { SporkBuilder.applyWithEnv(n) { n =>
+      fib(n).onComplete { SporkBuilder.applyWithEnv(n) { n => result =>
         ctx.log("Completed result of fib(" + n + "): " + result)
       }}
     }}
@@ -53,14 +53,14 @@ object Fibonacci {
 A workflow can be created by using the `DWorkflow.apply` method, which takes a `Spork`, a serializable closure from the [Sporks3]((https://github.com/jspenger/sporks3)) library, as an argument for the initial block which starts the execution.
 
 ```scala
-DWorkflow("my-workflow") { Spork.apply {
-  DFuture.apply { Spork.apply {
+DWorkflow("my-workflow") { SporkBuilder.apply {
+  DFuture.apply { SporkBuilder.apply {
     ctx.log("Hello, world!")
   }}
 }}
 ```
 
-The above program will run a workflow which consists of an initial block, the outer Spork.
+The above program will run a workflow which consists of an initial block, the outer SporkBuilder.
 The initial block will create a future, the inner Spork, which will be executed asynchronously and print "Hello, world!".
 
 By using futures and promises, and common operations on them, it is possible to write complex workflows.
@@ -69,18 +69,18 @@ After successful execution, it prints "Completed result of fib(10): 55"
 
 ```scala
 def fib(n: Int)(using DExecutionContext): DFuture[Int] = n match
-  case 0 => DFuture { Spork.apply { 0 } }
-  case 1 => DFuture { Spork.apply { 1 } }
+  case 0 => DFuture { SporkBuilder.apply { 0 } }
+  case 1 => DFuture { SporkBuilder.apply { 1 } }
   case _ =>
-    fib(n - 1).flatMap { Spork.applyWithEnv(n) { n => n1 =>
-      fib(n - 2).map { Spork.applyWithEnv(n1) { n1 => n2 =>
+    fib(n - 1).flatMap { SporkBuilder.applyWithEnv(n) { n => n1 =>
+      fib(n - 2).map { SporkBuilder.applyWithEnv(n1) { n1 => n2 =>
         n1 + n2
       }}
     }}
 
 val n = 10
-val workflow = DWorkflow { Spork.applyWithEnv(n) { n =>
-  fib(n).onComplete { Spork.applyWithEnv(n) { n => result =>
+val workflow = DWorkflow { SporkBuilder.applyWithEnv(n) { n =>
+  fib(n).onComplete { SporkBuilder.applyWithEnv(n) { n => result =>
     ctx.log("Completed result of fib(" + n + "): " + result)
   }}
 }}

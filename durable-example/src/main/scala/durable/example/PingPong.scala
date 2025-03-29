@@ -12,7 +12,7 @@ object PingPong:
 
   def ping(n: Int)(using DExecutionContext): DFuture[Unit] =
     // format: off
-    DFuture.apply { Spork.applyWithEnv(n) {
+    DFuture.apply { SporkBuilder.applyWithEnv(n) {
       case n if n > 0 =>
         sleep
         ctx.log("ping " + n)
@@ -24,7 +24,7 @@ object PingPong:
 
   def pong(n: Int)(using DExecutionContext): DFuture[Unit] =
     // format: off
-    DFuture.apply { Spork.applyWithEnv(n) {
+    DFuture.apply { SporkBuilder.applyWithEnv(n) {
       case n if n > 0 =>
         sleep
         ctx.log("pong " + n)
@@ -36,7 +36,7 @@ object PingPong:
 
   def workflow(n: Int) =
     // format: off
-    DWorkflow { Spork.applyWithEnv(n) { n =>
+    DWorkflow { SporkBuilder.applyWithEnv(n) { n =>
       ctx.log("start for n: " + n)
       ping(n)
     }}

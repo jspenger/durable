@@ -17,10 +17,10 @@ import sporks.jvm.*
   * import durable.*
   * import durable.given
   *
-  * val workflow = DWorkflow.apply(1) { Spork.apply {
-  *   DFuture.apply { Spork.apply {
+  * val workflow = DWorkflow.apply(1) { SporkBuilder.apply {
+  *   DFuture.apply { SporkBuilder.apply {
   *     ctx.log("Hello, ")
-  *   }}.onComplete { Spork.apply { _ =>
+  *   }}.onComplete { SporkBuilder.apply { _ =>
   *     ctx.log("World!")
   *   }}
   * }}
@@ -52,11 +52,11 @@ package object durable {
   private[durable] given RW[DPromise[?]] = macroRW
   private[durable] given RW[DFuture[?]]  = macroRW
   
-  private[durable] object FUTURE_RW extends SporkObject[RW[DFuture[?]]](macroRW)
+  private[durable] object FUTURE_RW extends SporkObjectBuilder[RW[DFuture[?]]](macroRW)
   given future_rw: PRW[DFuture[?]]      = FUTURE_RW.pack().asInstanceOf
   given future_rw_t[T]: PRW[DFuture[T]] = FUTURE_RW.pack().asInstanceOf
 
-  private[durable] object PROMISE_RW extends SporkObject[RW[DPromise[?]]](macroRW)
+  private[durable] object PROMISE_RW extends SporkObjectBuilder[RW[DPromise[?]]](macroRW)
   given promise_rw: PRW[DPromise[?]]      = PROMISE_RW.pack().asInstanceOf
   given promise_rw_t[T]: PRW[DPromise[T]] = PROMISE_RW.pack().asInstanceOf
 
@@ -97,40 +97,40 @@ package object durable {
   )
 
   // Needed for bootstrapping the `unpackWithCtx` combinator
-  private object PACKED_TUPLE_RW extends SporkObject[RW[Tuple2[PS[?], PS[?]]]](macroRW)
+  private object PACKED_TUPLE_RW extends SporkObjectBuilder[RW[Tuple2[PS[?], PS[?]]]](macroRW)
   private given packed_tuple_rw[T, U]: PRW[Tuple2[PS[T], PS[U]]] = PACKED_TUPLE_RW.pack().asInstanceOf
 
   extension [T, U](spork: PS[T ?=> U]) {
     private inline def unpackWithCtx(packed: PS[T]): PS[U] =
-      Spork.applyWithEnv(spork, packed) { (spork, packed) =>
-        spork.build().apply(using packed.build())
+      SporkBuilder.applyWithEnv(spork, packed) { (spork, packed) =>
+        spork.unwrap().apply(using packed.unwrap())
       }
   }
 
   given try_rw[T](using t_rw: PRW[T]): PRW[Try[T]] =
-    Spork.apply { (t: RW[T]) ?=> summon[RW[Try[T]]] }.unpackWithCtx(t_rw)
+    SporkBuilder.apply { (t: RW[T]) ?=> summon[RW[Try[T]]] }.unpackWithCtx(t_rw)
 
   private given [T: RW, U: RW]: RW[Tuple2[T, U]] = macroRW
   given packed_tuple2_rw[T, U](using t: PRW[T], u: PRW[U]): PRW[Tuple2[T, U]] =
-    Spork.apply { (t: RW[T]) ?=> (u: RW[U]) ?=> summon[RW[Tuple2[T, U]]] }.unpackWithCtx(t).unpackWithCtx(u)
+    SporkBuilder.apply { (t: RW[T]) ?=> (u: RW[U]) ?=> summon[RW[Tuple2[T, U]]] }.unpackWithCtx(t).unpackWithCtx(u)
 
   private given [T: RW, U: RW, V: RW]: RW[Tuple3[T, U, V]] = macroRW
   given packed_tuple3_rw[T, U, V](using t: PRW[T], u: PRW[U], v: PRW[V]): PRW[Tuple3[T, U, V]] =
-    Spork.apply { (t: RW[T]) ?=> (u: RW[U]) ?=> (v: RW[V]) ?=> summon[RW[Tuple3[T, U, V]]] }.unpackWithCtx(t).unpackWithCtx(u).unpackWithCtx(v)
+    SporkBuilder.apply { (t: RW[T]) ?=> (u: RW[U]) ?=> (v: RW[V]) ?=> summon[RW[Tuple3[T, U, V]]] }.unpackWithCtx(t).unpackWithCtx(u).unpackWithCtx(v)
 
   private given [T: RW, U: RW, V: RW, W: RW]: RW[Tuple4[T, U, V, W]] = macroRW
   given packed_tuple4_rw[T, U, V, W](using t: PRW[T], u: PRW[U], v: PRW[V], w: PRW[W]): PRW[Tuple4[T, U, V, W]] =
-    Spork.apply { (t: RW[T]) ?=> (u: RW[U]) ?=> (v: RW[V]) ?=> (w: RW[W]) ?=> summon[RW[Tuple4[T, U, V, W]]] }.unpackWithCtx(t).unpackWithCtx(u).unpackWithCtx(v).unpackWithCtx(w)
+    SporkBuilder.apply { (t: RW[T]) ?=> (u: RW[U]) ?=> (v: RW[V]) ?=> (w: RW[W]) ?=> summon[RW[Tuple4[T, U, V, W]]] }.unpackWithCtx(t).unpackWithCtx(u).unpackWithCtx(v).unpackWithCtx(w)
 
   private given [T: RW, U: RW, V: RW, W: RW, X: RW]: RW[Tuple5[T, U, V, W, X]] = macroRW
   given packed_tuple5_rw[T, U, V, W, X](using t: PRW[T], u: PRW[U], v: PRW[V], w: PRW[W], x: PRW[X]): PRW[Tuple5[T, U, V, W, X]] =
-    Spork.apply { (t: RW[T]) ?=> (u: RW[U]) ?=> (v: RW[V]) ?=> (w: RW[W]) ?=> (x: RW[X]) ?=> summon[RW[Tuple5[T, U, V, W, X]]] }.unpackWithCtx(t).unpackWithCtx(u).unpackWithCtx(v).unpackWithCtx(w).unpackWithCtx(x)
+    SporkBuilder.apply { (t: RW[T]) ?=> (u: RW[U]) ?=> (v: RW[V]) ?=> (w: RW[W]) ?=> (x: RW[X]) ?=> summon[RW[Tuple5[T, U, V, W, X]]] }.unpackWithCtx(t).unpackWithCtx(u).unpackWithCtx(v).unpackWithCtx(w).unpackWithCtx(x)
 
   private given [T: RW, U: RW, V: RW, W: RW, X: RW, Y: RW]: RW[Tuple6[T, U, V, W, X, Y]] = macroRW
   given packed_tuple6_rw[T, U, V, W, X, Y](using t: PRW[T], u: PRW[U], v: PRW[V], w: PRW[W], x: PRW[X], y: PRW[Y]): PRW[Tuple6[T, U, V, W, X, Y]] =
-    Spork.apply { (t: RW[T]) ?=> (u: RW[U]) ?=> (v: RW[V]) ?=> (w: RW[W]) ?=> (x: RW[X]) ?=> (y: RW[Y]) ?=> summon[RW[Tuple6[T, U, V, W, X, Y]]] }.unpackWithCtx(t).unpackWithCtx(u).unpackWithCtx(v).unpackWithCtx(w).unpackWithCtx(x).unpackWithCtx(y)
+    SporkBuilder.apply { (t: RW[T]) ?=> (u: RW[U]) ?=> (v: RW[V]) ?=> (w: RW[W]) ?=> (x: RW[X]) ?=> (y: RW[Y]) ?=> summon[RW[Tuple6[T, U, V, W, X, Y]]] }.unpackWithCtx(t).unpackWithCtx(u).unpackWithCtx(v).unpackWithCtx(w).unpackWithCtx(x).unpackWithCtx(y)
 
   private given [T: RW, U: RW, V: RW, W: RW, X: RW, Y: RW, Z: RW]: RW[Tuple7[T, U, V, W, X, Y, Z]] = macroRW
   given packed_tuple7_rw[T, U, V, W, X, Y, Z](using t: PRW[T], u: PRW[U], v: PRW[V], w: PRW[W], x: PRW[X], y: PRW[Y], z: PRW[Z]): PRW[Tuple7[T, U, V, W, X, Y, Z]] =
-    Spork.apply { (t: RW[T]) ?=> (u: RW[U]) ?=> (v: RW[V]) ?=> (w: RW[W]) ?=> (x: RW[X]) ?=> (y: RW[Y]) ?=> (z: RW[Z]) ?=> summon[RW[Tuple7[T, U, V, W, X, Y, Z]]] }.unpackWithCtx(t).unpackWithCtx(u).unpackWithCtx(v).unpackWithCtx(w).unpackWithCtx(x).unpackWithCtx(y).unpackWithCtx(z)
+    SporkBuilder.apply { (t: RW[T]) ?=> (u: RW[U]) ?=> (v: RW[V]) ?=> (w: RW[W]) ?=> (x: RW[X]) ?=> (y: RW[Y]) ?=> (z: RW[Z]) ?=> summon[RW[Tuple7[T, U, V, W, X, Y, Z]]] }.unpackWithCtx(t).unpackWithCtx(u).unpackWithCtx(v).unpackWithCtx(w).unpackWithCtx(x).unpackWithCtx(y).unpackWithCtx(z)
 }

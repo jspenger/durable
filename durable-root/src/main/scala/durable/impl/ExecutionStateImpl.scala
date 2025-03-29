@@ -92,12 +92,10 @@ class MapDExecutionStateImpl() extends ExecutionState:
       case PackedObject(_) => false
       case PackedClass(_)  => false
       case PackedLambda(_) => false
-      case PackedWithEnv(packed, envStr, envRW) =>
-        val env = read(envStr)(using envRW.build())
-        containsRef(env, uid) || containsRef(packed, uid)
-      case PackedWithCtx(packed, envStr, envRW) =>
-        val env = read(envStr)(using envRW.build())
-        containsRef(env, uid) || containsRef(packed, uid)
+      case PackedWithEnv(packed, env) =>
+        containsRef(env.unwrap(), uid) || containsRef(packed, uid)
+      case PackedWithCtx(packed, env) =>
+        containsRef(env.unwrap(), uid) || containsRef(packed, uid)
       case _ => false // unknown
       // format: on
 

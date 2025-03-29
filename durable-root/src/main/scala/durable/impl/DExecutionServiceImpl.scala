@@ -96,7 +96,7 @@ class DExecutionServiceImpl(fname: String) extends DExecutionService {
   ): Boolean =
     this.state.getDPromiseData(uid) match
       case Some(old @ DPromiseData(uid, None, tpe)) =>
-        val result = write(data)(using tpe.rw.build().asInstanceOf)
+        val result = write(data)(using tpe.rw.unwrap().asInstanceOf)
         val newProm = old.copy(result = Some(result))
         this.state.insertDPromiseData(newProm)
         true
@@ -110,7 +110,7 @@ class DExecutionServiceImpl(fname: String) extends DExecutionService {
       case Some(DPromiseData(_, Some(result), tpe)) =>
         Some(
           Try(
-            read(result)(tpe.rw.build())
+            read(result)(tpe.rw.unwrap())
           )
         ).asInstanceOf[Option[Try[T]]]
       case Some(DPromiseData(_, None, _)) => None
@@ -124,7 +124,7 @@ class DExecutionServiceImpl(fname: String) extends DExecutionService {
       dBlock: DBlock,
       deps: Iterable[DPromiseData]
   ): Try[Any] =
-    val fun = dBlock.spork.build()
+    val fun = dBlock.spork.unwrap()
 
     // format: off
     val res = Try { deps match
@@ -138,13 +138,13 @@ class DExecutionServiceImpl(fname: String) extends DExecutionService {
         fun
           .asInstanceOf[DExecutionContext ?=> Any => Any]
           .apply(using this.ctx)
-          .apply(read(x.result.get)(using x.tpe.rw.build()))
+          .apply(read(x.result.get)(using x.tpe.rw.unwrap()))
       
       // BlockN
       case _ =>
         // Convert the list of DPromiseData into a Try[Tuple]
         val tupled = {
-          val listOfRes = deps.toList.map{ dep => read(dep.result.get)(using dep.tpe.rw.build()) }.asInstanceOf[List[Try[?]]]
+          val listOfRes = deps.toList.map{ dep => read(dep.result.get)(using dep.tpe.rw.unwrap()) }.asInstanceOf[List[Try[?]]]
           val flattened = Try(listOfRes.map(_.get))
           flattened match
             case Failure(exception) => Failure(exception)
