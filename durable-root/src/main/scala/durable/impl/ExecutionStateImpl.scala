@@ -81,6 +81,7 @@ class MapDExecutionStateImpl() extends ExecutionState:
     */
   private def containsRef(obj: Any, uid: UID): Boolean =
     import sporks.*
+    import sporks.PackedSpork.*
     obj match
       // format: off
       case DPromise(uid) if uid == uid => true
@@ -92,6 +93,8 @@ class MapDExecutionStateImpl() extends ExecutionState:
       case PackedObject(_) => false
       case PackedClass(_)  => false
       case PackedLambda(_) => false
+      case x @ PackedEnv(env, rw) =>
+        containsRef(x.unwrap(), uid)
       case PackedWithEnv(packed, env) =>
         containsRef(env.unwrap(), uid) || containsRef(packed, uid)
       case PackedWithCtx(packed, env) =>

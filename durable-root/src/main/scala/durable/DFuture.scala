@@ -80,8 +80,8 @@ case class DFuture[T] private[DFuture] (
             case fail @ Failure(_) => DPromise.fromTry[U](fail.asInstanceOf[Failure[U]]).future
             case Success(value) => spork.unwrap().apply(value)
         }
-        .packWithCtx(prw)
-        .packWithEnv(spork)
+        .withCtx(prw)
+        .withEnv(spork)
     }
 
   def zip[U](other: DFuture[U])(using rw1: PackedSpork[ReadWriter[T]], rw2: PackedSpork[ReadWriter[Try[(T, U)]]])(using DExecutionContext): DFuture[(T, U)] =
