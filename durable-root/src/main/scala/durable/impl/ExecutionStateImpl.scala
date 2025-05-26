@@ -80,8 +80,8 @@ class MapDExecutionStateImpl() extends ExecutionState:
     * DFuture with the given `uid`.
     */
   private def containsRef(obj: Any, uid: UID): Boolean =
-    import sporks.*
-    import sporks.PackedSpork.*
+    import sporks.SporkExtractor.*
+
     obj match
       // format: off
       case DPromise(uid) if uid == uid => true
@@ -90,14 +90,11 @@ class MapDExecutionStateImpl() extends ExecutionState:
         containsRef(h, uid) || containsRef(t, uid)
       case h :: t =>
         containsRef(h, uid) || containsRef(t, uid)
-      case PackedObject(_) => false
-      case PackedClass(_)  => false
-      case PackedLambda(_) => false
-      case x @ PackedEnv(env, rw) =>
+      case x @ Packed0() =>
         containsRef(x.unwrap(), uid)
-      case PackedWithEnv(packed, env) =>
+      case Packed1(packed, env) =>
         containsRef(env.unwrap(), uid) || containsRef(packed, uid)
-      case PackedWithCtx(packed, env) =>
+      case Packed2(packed, env) =>
         containsRef(env.unwrap(), uid) || containsRef(packed, uid)
       case _ => false // unknown
       // format: on

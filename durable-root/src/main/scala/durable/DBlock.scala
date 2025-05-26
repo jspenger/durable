@@ -31,7 +31,7 @@ import sporks.given
   */
 private[durable] case class DBlock(
     uid: UID,
-    spork: PackedSpork[?],
+    spork: Spork[?],
     dependencies: List[DPromise[?]],
     promise: DPromise[?],
     retryPolicy: DRetryPolicy,

@@ -21,13 +21,13 @@ trait DExecutionService:
 
   private[durable] def timestamp(): Long
 
-  private[durable] def submitBlock0[R](spork: PackedSpork[DEX ?=> R])(using PackedSpork[ReadWriter[Try[R]]]): DFuture[R]
+  private[durable] def submitBlock0[R](spork: Spork[DEX ?=> R])(using Spork[ReadWriter[Try[R]]]): DFuture[R]
 
-  private[durable] def submitBlock1[T, R](spork: PackedSpork[DEX ?=> Try[T] => R], dep: DPromise[T])(using PackedSpork[ReadWriter[Try[R]]]): DFuture[R]
+  private[durable] def submitBlock1[T, R](spork: Spork[DEX ?=> Try[T] => R], dep: DPromise[T])(using Spork[ReadWriter[Try[R]]]): DFuture[R]
 
-  private[durable] def submitBlockN[T <: Tuple, R](spork: PackedSpork[DEX ?=> Try[T] => R], deps: List[DPromise[?]])(using PackedSpork[ReadWriter[Try[R]]]): DFuture[R]
+  private[durable] def submitBlockN[T <: Tuple, R](spork: Spork[DEX ?=> Try[T] => R], deps: List[DPromise[?]])(using Spork[ReadWriter[Try[R]]]): DFuture[R]
 
-  private[durable] def freshPromise[T]()(using rw: PackedSpork[ReadWriter[Try[T]]]): DPromise[T]
+  private[durable] def freshPromise[T]()(using rw: Spork[ReadWriter[Try[T]]]): DPromise[T]
 
   private[durable] def promiseTryComplete[T](uid: UID, data: Try[T]): Boolean
 

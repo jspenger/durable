@@ -39,10 +39,10 @@ class DExecutionServiceImpl(fname: String) extends DExecutionService {
   private[durable] override def timestamp(): Long = System.currentTimeMillis()
 
   private def submitBlock01N[R](
-      spork: PackedSpork[?],
+      spork: Spork[?],
       deps: List[DPromise[?]]
   )(using
-      PackedSpork[ReadWriter[Try[R]]]
+      Spork[ReadWriter[Try[R]]]
   ): DFuture[R] =
     val dPromise = this.freshPromise[R]()
     val dBlock =
@@ -57,31 +57,31 @@ class DExecutionServiceImpl(fname: String) extends DExecutionService {
     dPromise.future
 
   private[durable] override def submitBlock0[R](
-      spork: PackedSpork[DEX ?=> R]
+      spork: Spork[DEX ?=> R]
   )(using
-      PackedSpork[ReadWriter[Try[R]]]
+      Spork[ReadWriter[Try[R]]]
   ): DFuture[R] =
     this.submitBlock01N[R](spork, List.empty)
 
   private[durable] override def submitBlock1[T, R](
-      spork: PackedSpork[DEX ?=> Try[T] => R],
+      spork: Spork[DEX ?=> Try[T] => R],
       dep: DPromise[T]
   )(using
-      PackedSpork[ReadWriter[Try[R]]]
+      Spork[ReadWriter[Try[R]]]
   ): DFuture[R] =
     this.submitBlock01N[R](spork, List(dep))
 
   private[durable] override def submitBlockN[T <: Tuple, R](
-      spork: PackedSpork[DEX ?=> Try[T] => R],
+      spork: Spork[DEX ?=> Try[T] => R],
       deps: List[DPromise[?]]
   )(using
-      PackedSpork[ReadWriter[Try[R]]]
+      Spork[ReadWriter[Try[R]]]
   ): DFuture[R] =
     this.submitBlock01N[R](spork, deps)
 
   private[durable] override def freshPromise[T](
   )(using
-      rw: PackedSpork[ReadWriter[Try[T]]]
+      rw: Spork[ReadWriter[Try[T]]]
   ): DPromise[T] =
     val dPromise =
       DPromiseData.empty[Try[T]](

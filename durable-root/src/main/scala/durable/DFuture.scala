@@ -33,7 +33,7 @@ case class DFuture[T] private[DFuture] (
 
   def transform[U](spork: PS[DEX ?=> Try[T] => Try[U]])(using PRW[Try[U]])(using DEX): DFuture[U] =
     ctx.service.submitBlock1(
-      SporkBuilder.applyWithEnv[PS[DEX ?=> Try[T] => Try[U]], DEX ?=> Try[T] => U](spork) { spork => result =>
+      Spork.applyWithEnv[PS[DEX ?=> Try[T] => Try[U]], DEX ?=> Try[T] => U](spork) { spork => result =>
         spork.unwrap().apply(result).get
       },
       DPromise.applyFromUID(this.uid),
@@ -50,12 +50,12 @@ case class DFuture[T] private[DFuture] (
   def flatten[S]()(using ev: T <:< DFuture[S])(using PRW[Try[S]])(using DEX): DFuture[S] =
     val dProm = DPromise[S]()
     this.onComplete {
-      SporkBuilder.applyWithEnv(dProm) { dProm => result =>
+      Spork.applyWithEnv(dProm) { dProm => result =>
         result match
           case Failure(e) => dProm.tryComplete(Failure(e))
           case Success(t) =>
             t.asInstanceOf[DFuture[S]].onComplete {
-              SporkBuilder.applyWithEnv(dProm) { dProm => result =>
+              Spork.applyWithEnv(dProm) { dProm => result =>
                 dProm.tryComplete(result)
               }
             }
@@ -65,7 +65,7 @@ case class DFuture[T] private[DFuture] (
 
   def map[U](spork: PS[DEX ?=> T => U])(using PRW[Try[U]])(using DEX): DFuture[U] =
     this.transform {
-      SporkBuilder.applyWithEnv(spork) { spork => result =>
+      Spork.applyWithEnv(spork) { spork => result =>
         result match
           case fail @ Failure(_) => fail.asInstanceOf[Failure[U]]
           case Success(value) => Success(spork.unwrap().apply(value))
@@ -74,7 +74,7 @@ case class DFuture[T] private[DFuture] (
 
   def flatMap[U](spork: PS[DEX ?=> T => DFuture[U]])(using prw: PRW[Try[U]])(using DEX): DFuture[U] =
     this.transformWith {
-      SporkBuilder
+      Spork
         .apply[PRW[Try[U]] ?=> PS[DEX ?=> T => DFuture[U]] => DEX ?=> Try[T] => DFuture[U]] { spork => result =>
           result match
             case fail @ Failure(_) => DPromise.fromTry[U](fail.asInstanceOf[Failure[U]]).future
@@ -84,13 +84,13 @@ case class DFuture[T] private[DFuture] (
         .withEnv(spork)
     }
 
-  def zip[U](other: DFuture[U])(using rw1: PackedSpork[ReadWriter[T]], rw2: PackedSpork[ReadWriter[Try[(T, U)]]])(using DExecutionContext): DFuture[(T, U)] =
+  def zip[U](other: DFuture[U])(using rw1: Spork[ReadWriter[T]], rw2: Spork[ReadWriter[Try[(T, U)]]])(using DExecutionContext): DFuture[(T, U)] =
     this.sequence(Tuple(other))
 
   def sequence[U <: Tuple](others: Tuple.Map[U, DFuture])(using prw: PRW[Try[T *: U]])(using DExecutionContext): DFuture[T *: U] =
     val otherDeps = others.toList.asInstanceOf[List[DFuture[_]]].map { dFut => DPromise.applyFromUID(dFut.uid) }
     ctx.service.submitBlockN(
-      SporkBuilder.apply[DEX ?=> Try[T *: U] => T *: U] { result =>
+      Spork.apply[DEX ?=> Try[T *: U] => T *: U] { result =>
         result match
           case Failure(e) => throw e
           case Success(value) => value
@@ -108,7 +108,7 @@ object DFuture:
     * @tparam T
     *   The type of the result that the `DFuture` will hold.
     */
-  def apply[T](spork: PackedSpork[DExecutionContext ?=> T])(using DExecutionContext)(using PackedSpork[ReadWriter[Try[T]]]): DFuture[T] =
+  def apply[T](spork: Spork[DExecutionContext ?=> T])(using DExecutionContext)(using Spork[ReadWriter[Try[T]]]): DFuture[T] =
     ctx.service.submitBlock0(spork)
 
   /** Internal API. Create a DFuture from a UID. */

@@ -71,6 +71,3 @@ sandbox:
 		&& make test \
 		&& make example-runAll \
 		&& make scalafmtCheck
-ifdef arg
-		cd .sandbox && $(arg)
-endif

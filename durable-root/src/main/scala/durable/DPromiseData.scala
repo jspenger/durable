@@ -12,8 +12,8 @@ import sporks.*
   *   The result of the `DPromise`. If None, then the `DPromise is not yet
   *   resolved. If it is Some, then its result is resolved and final.
   * @param tpe
-  *   The type information of the `DPromise`, contains a
-  *   `PackedSpork[ReadWriter]` for serializing and deserializing the result.
+  *   The type information of the `DPromise`, contains a `Spork[ReadWriter]` for
+  *   serializing and deserializing the result.
   */
 private[durable] case class DPromiseData(
     uid: UID,
@@ -25,7 +25,7 @@ end DPromiseData
 
 private[durable] object DPromiseData:
   /** Internal API. Create an empty `DPromiseData` for a given `uid`. */
-  def empty[T: scala.reflect.ClassTag](uid: UID)(using PackedSpork[ReadWriter[T]]): DPromiseData =
+  def empty[T: scala.reflect.ClassTag](uid: UID)(using Spork[ReadWriter[T]]): DPromiseData =
     DPromiseData(
       uid,
       None,

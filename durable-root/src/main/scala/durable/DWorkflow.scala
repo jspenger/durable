@@ -6,7 +6,7 @@ import sporks.*
 import sporks.given
 
 private[durable] case class DWorkflow(
-    init: PackedSpork[DExecutionContext ?=> Unit],
+    init: Spork[DExecutionContext ?=> Unit],
     retryPolicy: DRetryPolicy,
 ) derives ReadWriter
 
@@ -20,16 +20,16 @@ object DWorkflow:
     *
     * @example
     *   {{{
-    * val workflow = DWorkflow.apply { SporkBuilder.apply {
-    *   DFuture.apply { SporkBuilder.apply {
+    * val workflow = DWorkflow.apply { Spork.apply {
+    *   DFuture.apply { Spork.apply {
     *     ctx.log("Hello, ")
-    *   }}.onComplete { SporkBuilder.apply { _ =>
+    *   }}.onComplete { Spork.apply { _ =>
     *     ctx.log("World!")
     *   }}
     * }}
     *   }}}
     */
-  def apply(spork: PackedSpork[DExecutionContext ?=> Unit]): DWorkflow =
+  def apply(spork: Spork[DExecutionContext ?=> Unit]): DWorkflow =
     DWorkflow.apply(
       spork,
       DRetryPolicy.default,

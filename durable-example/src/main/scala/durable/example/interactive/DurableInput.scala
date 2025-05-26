@@ -18,7 +18,7 @@ object DurableInput:
 
   def step(str: String)(using DExecutionContext): DFuture[Unit] =
     // format: off
-    DFuture.apply { SporkBuilder.applyWithEnv(str) { str =>
+    DFuture.apply { Spork.applyWithEnv(str) { str =>
       val n = inpt
       val newStr = n.toString() + " :: " + str
       ctx.log("You entered: " + n)
@@ -29,7 +29,7 @@ object DurableInput:
 
   def main(args: Array[String]): Unit =
     // format: off
-    val workflow = DWorkflow { SporkBuilder.apply {
+    val workflow = DWorkflow { Spork.apply {
       step("nil")
     }}
     // format: on
