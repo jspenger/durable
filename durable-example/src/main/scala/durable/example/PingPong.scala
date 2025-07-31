@@ -1,8 +1,8 @@
 package durable.example
 
-import sporks.*
-import sporks.given
-import sporks.jvm.*
+import spores.*
+import spores.given
+import spores.jvm.*
 
 import durable.*
 import durable.given
@@ -12,7 +12,7 @@ object PingPong:
 
   def ping(n: Int)(using DExecutionContext): DFuture[Unit] =
     // format: off
-    DFuture.apply { Spork.applyWithEnv(n) {
+    DFuture.apply { Spore.applyWithEnv(n) {
       case n if n > 0 =>
         sleep
         ctx.log("ping " + n)
@@ -24,7 +24,7 @@ object PingPong:
 
   def pong(n: Int)(using DExecutionContext): DFuture[Unit] =
     // format: off
-    DFuture.apply { Spork.applyWithEnv(n) {
+    DFuture.apply { Spore.applyWithEnv(n) {
       case n if n > 0 =>
         sleep
         ctx.log("pong " + n)
@@ -36,7 +36,7 @@ object PingPong:
 
   def workflow(n: Int) =
     // format: off
-    DWorkflow { Spork.applyWithEnv(n) { n =>
+    DWorkflow { Spore.applyWithEnv(n) { n =>
       ctx.log("start for n: " + n)
       ping(n)
     }}

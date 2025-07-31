@@ -4,8 +4,8 @@ import scala.util.*
 
 import upickle.default.*
 
-import sporks.*
-import sporks.given
+import spores.*
+import spores.given
 
 import durable.*
 import durable.given
@@ -39,16 +39,16 @@ class DExecutionServiceImpl(fname: String) extends DExecutionService {
   private[durable] override def timestamp(): Long = System.currentTimeMillis()
 
   private def submitBlock01N[R](
-      spork: Spork[?],
+      spore: Spore[?],
       deps: List[DPromise[?]]
   )(using
-      Spork[ReadWriter[Try[R]]]
+      Spore[ReadWriter[Try[R]]]
   ): DFuture[R] =
     val dPromise = this.freshPromise[R]()
     val dBlock =
       DBlock(
         this.freshUID(),
-        spork,
+        spore,
         deps,
         dPromise,
         Repeat(Int.MaxValue),
@@ -57,31 +57,31 @@ class DExecutionServiceImpl(fname: String) extends DExecutionService {
     dPromise.future
 
   private[durable] override def submitBlock0[R](
-      spork: Spork[DEX ?=> R]
+      spore: Spore[DEX ?=> R]
   )(using
-      Spork[ReadWriter[Try[R]]]
+      Spore[ReadWriter[Try[R]]]
   ): DFuture[R] =
-    this.submitBlock01N[R](spork, List.empty)
+    this.submitBlock01N[R](spore, List.empty)
 
   private[durable] override def submitBlock1[T, R](
-      spork: Spork[DEX ?=> Try[T] => R],
+      spore: Spore[DEX ?=> Try[T] => R],
       dep: DPromise[T]
   )(using
-      Spork[ReadWriter[Try[R]]]
+      Spore[ReadWriter[Try[R]]]
   ): DFuture[R] =
-    this.submitBlock01N[R](spork, List(dep))
+    this.submitBlock01N[R](spore, List(dep))
 
   private[durable] override def submitBlockN[T <: Tuple, R](
-      spork: Spork[DEX ?=> Try[T] => R],
+      spore: Spore[DEX ?=> Try[T] => R],
       deps: List[DPromise[?]]
   )(using
-      Spork[ReadWriter[Try[R]]]
+      Spore[ReadWriter[Try[R]]]
   ): DFuture[R] =
-    this.submitBlock01N[R](spork, deps)
+    this.submitBlock01N[R](spore, deps)
 
   private[durable] override def freshPromise[T](
   )(using
-      rw: Spork[ReadWriter[Try[T]]]
+      rw: Spore[ReadWriter[Try[T]]]
   ): DPromise[T] =
     val dPromise =
       DPromiseData.empty[Try[T]](
@@ -124,7 +124,7 @@ class DExecutionServiceImpl(fname: String) extends DExecutionService {
       dBlock: DBlock,
       deps: Iterable[DPromiseData]
   ): Try[Any] =
-    val fun = dBlock.spork.unwrap()
+    val fun = dBlock.spore.unwrap()
 
     // format: off
     val res = Try { deps match

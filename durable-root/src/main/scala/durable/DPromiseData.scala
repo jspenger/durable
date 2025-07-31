@@ -2,7 +2,7 @@ package durable
 
 import upickle.default.*
 
-import sporks.*
+import spores.*
 
 /** Internal API. ReadWriter'able representation of a `Dpromise`'s data.
   *
@@ -12,7 +12,7 @@ import sporks.*
   *   The result of the `DPromise`. If None, then the `DPromise is not yet
   *   resolved. If it is Some, then its result is resolved and final.
   * @param tpe
-  *   The type information of the `DPromise`, contains a `Spork[ReadWriter]` for
+  *   The type information of the `DPromise`, contains a `Spore[ReadWriter]` for
   *   serializing and deserializing the result.
   */
 private[durable] case class DPromiseData(
@@ -25,7 +25,7 @@ end DPromiseData
 
 private[durable] object DPromiseData:
   /** Internal API. Create an empty `DPromiseData` for a given `uid`. */
-  def empty[T: scala.reflect.ClassTag](uid: UID)(using Spork[ReadWriter[T]]): DPromiseData =
+  def empty[T: scala.reflect.ClassTag](uid: UID)(using Spore[ReadWriter[T]]): DPromiseData =
     DPromiseData(
       uid,
       None,

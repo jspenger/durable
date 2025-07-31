@@ -76,11 +76,11 @@ class MapDExecutionStateImpl() extends ExecutionState:
       file.delete()
       true
 
-  /** Check if the `obj`ect / Spork contains a reference to a DPromise or
+  /** Check if the `obj`ect / Spore contains a reference to a DPromise or
     * DFuture with the given `uid`.
     */
   private def containsRef(obj: Any, uid: UID): Boolean =
-    import sporks.SporkExtractor.*
+    import spores.SporeExtractor.*
 
     obj match
       // format: off
@@ -104,12 +104,12 @@ class MapDExecutionStateImpl() extends ExecutionState:
     * A block depends on a promise if:
     *   - The promise is in the block's dependencies
     *   - The promise is the block's promise
-    *   - The promise is serialized in the block's spork
+    *   - The promise is serialized in the block's spore
     */
   private def dependsOn(block: DBlock, promise: DPromiseData): Boolean =
     block.dependencies.exists(_.uid == promise.uid)
       || block.promise.uid == promise.uid
-      || containsRef(block.spork, promise.uid)
+      || containsRef(block.spore, promise.uid)
 
   /** Garbage collect all redundant DBlocks and DPromises.
     *
@@ -133,7 +133,7 @@ class MapDExecutionStateImpl() extends ExecutionState:
 
     TablePrinter.pprint(
       "DBlock",
-      List("uid", "spork", "dependencies", "promise", "retryPolicy"),
+      List("uid", "spore", "dependencies", "promise", "retryPolicy"),
       this.state.dBlock,
       nRows,
       maxWidth,

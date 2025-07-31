@@ -2,7 +2,7 @@
 val scala33               = "3.3.4"
 val junitInterfaceVersion = "0.11"
 val upickleVersion        = "3.1.0"
-val sporksVersion         = "0.1.0-SNAPSHOT"
+val sporesVersion         = "0.2.0-SNAPSHOT"
 
 ThisBuild / organization     := "com.jspenger"
 ThisBuild / organizationName := "Jonas Spenger"
@@ -27,9 +27,7 @@ lazy val root = project
   .in(file("durable-root"))
   .settings(
     name := "durable",
-    resolvers += "jitpack" at "https://jitpack.io",
-    // libraryDependencies += "com.github.jspenger" % "sporks3" % "main-SNAPSHOT",
-    libraryDependencies += "com.jspenger" %% "sporks3" % sporksVersion,
+    libraryDependencies += "com.phaller" %% "spores3" % sporesVersion,
     libraryDependencies += "com.lihaoyi" %% "upickle" % upickleVersion,
     libraryDependencies += "com.novocode" % "junit-interface" % junitInterfaceVersion % Test,
   )

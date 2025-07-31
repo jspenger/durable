@@ -1,8 +1,8 @@
 package durable.example
 
-import sporks.*
-import sporks.given
-import sporks.jvm.*
+import spores.*
+import spores.given
+import spores.jvm.*
 
 import durable.*
 import durable.given
@@ -12,10 +12,10 @@ object HelloWorld {
 
   def main(args: Array[String]): Unit = {
 
-    val workflow = DWorkflow.apply { Spork.apply {
-      DFuture.apply { Spork.apply {
+    val workflow = DWorkflow.apply { Spore.apply {
+      DFuture.apply { Spore.apply {
         ctx.log("Hello, ")
-      }}.onComplete { Spork.apply { _ =>
+      }}.onComplete { Spore.apply { _ =>
         ctx.log("World!")
       }}
     }}

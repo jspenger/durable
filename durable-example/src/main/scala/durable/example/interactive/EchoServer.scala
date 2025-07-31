@@ -4,9 +4,9 @@ import java.net.*
 import java.nio.*
 import java.nio.channels.*
 
-import sporks.*
-import sporks.given
-import sporks.jvm.*
+import spores.*
+import spores.given
+import spores.jvm.*
 
 import durable.*
 import durable.given
@@ -89,7 +89,7 @@ object EchoServer:
   inline def sleep = Thread.sleep(1_000)
 
   def listen(history: List[String])(using DExecutionContext): DFuture[Unit] = DFuture {
-    Spork.applyWithEnv(history) { history =>
+    Spore.applyWithEnv(history) { history =>
       sleep
       ctx.log("Listening on " + host + ":" + port)
       server.next match
@@ -115,7 +115,7 @@ object EchoServer:
   }
 
   val workflow = DWorkflow {
-    Spork.apply {
+    Spore.apply {
       listen(List.empty)
     }
   }

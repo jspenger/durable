@@ -2,11 +2,11 @@ package durable
 
 import upickle.default.*
 
-import sporks.*
-import sporks.given
+import spores.*
+import spores.given
 
 private[durable] case class DWorkflow(
-    init: Spork[DExecutionContext ?=> Unit],
+    init: Spore[DExecutionContext ?=> Unit],
     retryPolicy: DRetryPolicy,
 ) derives ReadWriter
 
@@ -14,23 +14,23 @@ object DWorkflow:
   /** Create a new `DWorkflow` to be executed by a [[DExecutionService]].
     *
     * @param packed
-    *   The packed function / Spork to be executed.
+    *   The packed function / Spore to be executed.
     * @return
     *   A new `DWorkflow`.
     *
     * @example
     *   {{{
-    * val workflow = DWorkflow.apply { Spork.apply {
-    *   DFuture.apply { Spork.apply {
+    * val workflow = DWorkflow.apply { Spore.apply {
+    *   DFuture.apply { Spore.apply {
     *     ctx.log("Hello, ")
-    *   }}.onComplete { Spork.apply { _ =>
+    *   }}.onComplete { Spore.apply { _ =>
     *     ctx.log("World!")
     *   }}
     * }}
     *   }}}
     */
-  def apply(spork: Spork[DExecutionContext ?=> Unit]): DWorkflow =
+  def apply(spore: Spore[DExecutionContext ?=> Unit]): DWorkflow =
     DWorkflow.apply(
-      spork,
+      spore,
       DRetryPolicy.default,
     )

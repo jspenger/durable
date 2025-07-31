@@ -4,7 +4,7 @@ import scala.util.*
 
 import upickle.default.*
 
-import sporks.*
+import spores.*
 
 /** Service for executing durable workflows. */
 trait DExecutionService:
@@ -21,13 +21,13 @@ trait DExecutionService:
 
   private[durable] def timestamp(): Long
 
-  private[durable] def submitBlock0[R](spork: Spork[DEX ?=> R])(using Spork[ReadWriter[Try[R]]]): DFuture[R]
+  private[durable] def submitBlock0[R](spore: Spore[DEX ?=> R])(using Spore[ReadWriter[Try[R]]]): DFuture[R]
 
-  private[durable] def submitBlock1[T, R](spork: Spork[DEX ?=> Try[T] => R], dep: DPromise[T])(using Spork[ReadWriter[Try[R]]]): DFuture[R]
+  private[durable] def submitBlock1[T, R](spore: Spore[DEX ?=> Try[T] => R], dep: DPromise[T])(using Spore[ReadWriter[Try[R]]]): DFuture[R]
 
-  private[durable] def submitBlockN[T <: Tuple, R](spork: Spork[DEX ?=> Try[T] => R], deps: List[DPromise[?]])(using Spork[ReadWriter[Try[R]]]): DFuture[R]
+  private[durable] def submitBlockN[T <: Tuple, R](spore: Spore[DEX ?=> Try[T] => R], deps: List[DPromise[?]])(using Spore[ReadWriter[Try[R]]]): DFuture[R]
 
-  private[durable] def freshPromise[T]()(using rw: Spork[ReadWriter[Try[T]]]): DPromise[T]
+  private[durable] def freshPromise[T]()(using rw: Spore[ReadWriter[Try[T]]]): DPromise[T]
 
   private[durable] def promiseTryComplete[T](uid: UID, data: Try[T]): Boolean
 

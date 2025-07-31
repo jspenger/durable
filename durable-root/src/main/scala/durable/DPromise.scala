@@ -4,7 +4,7 @@ import scala.util.*
 
 import upickle.default.*
 
-import sporks.*
+import spores.*
 
 /** A durable promise of a result with type `T`.
   *
@@ -35,10 +35,10 @@ object DPromise:
     * @return
     *   A new durable promise.
     */
-  def apply[T]()(using DExecutionContext)(using Spork[ReadWriter[Try[T]]]): DPromise[T] =
+  def apply[T]()(using DExecutionContext)(using Spore[ReadWriter[Try[T]]]): DPromise[T] =
     ctx.service.freshPromise[T]()
 
-  def fromTry[T](result: Try[T])(using DExecutionContext)(using prwt: Spork[ReadWriter[Try[T]]]): DPromise[T] =
+  def fromTry[T](result: Try[T])(using DExecutionContext)(using prwt: Spore[ReadWriter[Try[T]]]): DPromise[T] =
     val promise = DPromise.apply[T]()
     promise.tryComplete(result)
     promise

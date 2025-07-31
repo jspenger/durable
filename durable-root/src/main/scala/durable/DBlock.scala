@@ -2,12 +2,12 @@ package durable
 
 import upickle.default.*
 
-import sporks.*
-import sporks.given
+import spores.*
+import spores.given
 
 /** Internal API. A durable block to be executed by the [[DExecutionService]].
   *
-  * A block's Spork has one of three shapes.
+  * A block's Spore has one of three shapes.
   *   - 0: `DEX ?=> R`, when `dependencies` = `List.empty`.
   *   - 1: `DEX ?=> Try[T] => R`, when `dependencies` = `List(dep)` and the type
   *     of `dep` is `T`.
@@ -20,7 +20,7 @@ import sporks.given
   *
   * @param uid
   *   unique identifier of the block
-  * @param spork
+  * @param spore
   *   packed function to be executed
   * @param dependencies
   *   list of promises that this block depends on
@@ -31,7 +31,7 @@ import sporks.given
   */
 private[durable] case class DBlock(
     uid: UID,
-    spork: Spork[?],
+    spore: Spore[?],
     dependencies: List[DPromise[?]],
     promise: DPromise[?],
     retryPolicy: DRetryPolicy,

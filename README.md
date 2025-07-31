@@ -15,28 +15,28 @@ Create and run durable and fault tolerant workflows with a simple API based on l
 <summary>Fully executable example</summary>
 
 ```scala
-import sporks.*
-import sporks.given
-import sporks.jvm.*
+import spores.*
+import spores.given
+import spores.jvm.*
 
 import durable.*
 import durable.given
 
 object Fibonacci {
   def fib(n: Int)(using DExecutionContext): DFuture[Int] = n match
-    case 0 => DFuture { Spork.apply { 0 } }
-    case 1 => DFuture { Spork.apply { 1 } }
+    case 0 => DFuture { Spore.apply { 0 } }
+    case 1 => DFuture { Spore.apply { 1 } }
     case _ =>
-      fib(n - 1).flatMap { Spork.applyWithEnv(n) { n => n1 =>
-        fib(n - 2).map { Spork.applyWithEnv(n1) { n1 => n2 =>
+      fib(n - 1).flatMap { Spore.applyWithEnv(n) { n => n1 =>
+        fib(n - 2).map { Spore.applyWithEnv(n1) { n1 => n2 =>
           n1 + n2
         }}
       }}
 
   def main(args: Array[String]): Unit = {
     val n = 10
-    val workflow = DWorkflow { Spork.applyWithEnv(n) { n =>
-      fib(n).onComplete { Spork.applyWithEnv(n) { n => result =>
+    val workflow = DWorkflow { Spore.applyWithEnv(n) { n =>
+      fib(n).onComplete { Spore.applyWithEnv(n) { n => result =>
         ctx.log("Completed result of fib(" + n + "): " + result)
       }}
     }}
@@ -50,18 +50,18 @@ object Fibonacci {
 ```
 </details>
 
-A workflow can be created by using the `DWorkflow.apply` method, which takes a `Spork`, a serializable closure from the [Sporks3]((https://github.com/jspenger/sporks3)) library, as an argument for the initial block which starts the execution.
+A workflow can be created by using the `DWorkflow.apply` method, which takes a `Spore`, a serializable closure from the [Spores3]((https://github.com/phaller/spores3)) library, as an argument for the initial block which starts the execution.
 
 ```scala
-DWorkflow("my-workflow") { Spork.apply {
-  DFuture.apply { Spork.apply {
+DWorkflow("my-workflow") { Spore.apply {
+  DFuture.apply { Spore.apply {
     ctx.log("Hello, world!")
   }}
 }}
 ```
 
-The above program will run a workflow which consists of an initial block, the outer Spork.
-The initial block will create a future, the inner Spork, which will be executed asynchronously and print "Hello, world!".
+The above program will run a workflow which consists of an initial block, the outer Spore.
+The initial block will create a future, the inner Spore, which will be executed asynchronously and print "Hello, world!".
 
 By using futures and promises, and common operations on them, it is possible to write complex workflows.
 For example, this workflow computes the 10th Fibonacci number.
@@ -69,18 +69,18 @@ After successful execution, it prints "Completed result of fib(10): 55"
 
 ```scala
 def fib(n: Int)(using DExecutionContext): DFuture[Int] = n match
-  case 0 => DFuture { Spork.apply { 0 } }
-  case 1 => DFuture { Spork.apply { 1 } }
+  case 0 => DFuture { Spore.apply { 0 } }
+  case 1 => DFuture { Spore.apply { 1 } }
   case _ =>
-    fib(n - 1).flatMap { Spork.applyWithEnv(n) { n => n1 =>
-      fib(n - 2).map { Spork.applyWithEnv(n1) { n1 => n2 =>
+    fib(n - 1).flatMap { Spore.applyWithEnv(n) { n => n1 =>
+      fib(n - 2).map { Spore.applyWithEnv(n1) { n1 => n2 =>
         n1 + n2
       }}
     }}
 
 val n = 10
-val workflow = DWorkflow { Spork.applyWithEnv(n) { n =>
-  fib(n).onComplete { Spork.applyWithEnv(n) { n => result =>
+val workflow = DWorkflow { Spore.applyWithEnv(n) { n =>
+  fib(n).onComplete { Spore.applyWithEnv(n) { n => result =>
     ctx.log("Completed result of fib(" + n + "): " + result)
   }}
 }}
@@ -116,12 +116,12 @@ In addition to this, each result of a block execution is written to a promise wh
 
 ## Dependencies
 
-This project depends on [Sporks3](https://github.com/jspenger/sporks3), which is not yet published to Maven Central.
+This project depends on [Spores3](https://github.com/phaller/spores3), which is not yet published to Maven Central.
 It can be built and published locally by running the following commands:
 
 ```shell
-git clone https://github.com/jspenger/sporks3.git
-cd sporks3
+git clone https://github.com/phaller/spores3.git
+cd spores3
 sbt publishLocal
 ```
 

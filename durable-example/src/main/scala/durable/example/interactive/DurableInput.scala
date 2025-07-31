@@ -1,8 +1,8 @@
 package durable.example.interactive
 
-import sporks.*
-import sporks.given
-import sporks.jvm.*
+import spores.*
+import spores.given
+import spores.jvm.*
 
 import durable.*
 import durable.given
@@ -18,7 +18,7 @@ object DurableInput:
 
   def step(str: String)(using DExecutionContext): DFuture[Unit] =
     // format: off
-    DFuture.apply { Spork.applyWithEnv(str) { str =>
+    DFuture.apply { Spore.applyWithEnv(str) { str =>
       val n = inpt
       val newStr = n.toString() + " :: " + str
       ctx.log("You entered: " + n)
@@ -29,7 +29,7 @@ object DurableInput:
 
   def main(args: Array[String]): Unit =
     // format: off
-    val workflow = DWorkflow { Spork.apply {
+    val workflow = DWorkflow { Spore.apply {
       step("nil")
     }}
     // format: on
