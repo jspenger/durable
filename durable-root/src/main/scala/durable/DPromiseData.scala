@@ -2,7 +2,7 @@ package durable
 
 import upickle.default.*
 
-import spores.*
+import spores.default.*
 
 /** Internal API. ReadWriter'able representation of a `Dpromise`'s data.
   *

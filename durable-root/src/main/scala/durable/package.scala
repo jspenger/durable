@@ -2,8 +2,8 @@ import scala.util.*
 
 import upickle.default.*
 
-import spores.*
-import spores.given
+import spores.default.*
+import spores.default.given
 import spores.jvm.*
 
 /** Durable and fault tolerant computation library for Scala 3 with workflows
@@ -11,8 +11,8 @@ import spores.jvm.*
   *
   * @example
   *   {{{
-  * import spores.*
-  * import spores.given
+  * import spores.default.*
+  * import spores.default.given
   * import spores.jvm.*
   * import durable.*
   * import durable.given

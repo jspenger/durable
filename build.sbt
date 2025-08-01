@@ -1,7 +1,7 @@
 // format: off
-val scala33               = "3.3.4"
+val scala33               = "3.3.6"
 val junitInterfaceVersion = "0.11"
-val upickleVersion        = "3.1.0"
+val upickleVersion        = "3.3.1"
 val sporesVersion         = "0.2.0-SNAPSHOT"
 
 ThisBuild / organization     := "com.jspenger"

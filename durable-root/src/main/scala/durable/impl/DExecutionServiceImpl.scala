@@ -4,8 +4,8 @@ import scala.util.*
 
 import upickle.default.*
 
-import spores.*
-import spores.given
+import spores.default.*
+import spores.default.given
 
 import durable.*
 import durable.given

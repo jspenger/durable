@@ -2,8 +2,8 @@ package durable
 
 import upickle.default.*
 
-import spores.*
-import spores.given
+import spores.default.*
+import spores.default.given
 
 private[durable] case class DWorkflow(
     init: Spore[DExecutionContext ?=> Unit],

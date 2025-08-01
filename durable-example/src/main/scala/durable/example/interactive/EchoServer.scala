@@ -4,8 +4,8 @@ import java.net.*
 import java.nio.*
 import java.nio.channels.*
 
-import spores.*
-import spores.given
+import spores.default.*
+import spores.default.given
 import spores.jvm.*
 
 import durable.*

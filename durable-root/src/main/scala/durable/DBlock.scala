@@ -2,8 +2,8 @@ package durable
 
 import upickle.default.*
 
-import spores.*
-import spores.given
+import spores.default.*
+import spores.default.given
 
 /** Internal API. A durable block to be executed by the [[DExecutionService]].
   *

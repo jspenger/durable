@@ -4,7 +4,7 @@ import scala.util.*
 
 import upickle.default.*
 
-import spores.*
+import spores.default.*
 
 /** A durable promise of a result with type `T`.
   *

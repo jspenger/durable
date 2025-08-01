@@ -2,8 +2,8 @@ package durable
 
 import upickle.default.*
 
-import spores.*
-import spores.given
+import spores.default.*
+import spores.default.given
 
 /** Internal API. String representation of a *type*. Also contains a Spore for
   * the reading and writing of the represented type.

@@ -4,7 +4,7 @@ import scala.util.*
 
 import upickle.default.*
 
-import spores.*
+import spores.default.*
 
 /** Service for executing durable workflows. */
 trait DExecutionService:

@@ -9,9 +9,8 @@ import org.junit.Test
 
 import upickle.default.*
 
-import spores.*
-import spores.given
-import spores.jvm.*
+import spores.default.*
+import spores.default.given
 
 import durable.*
 import durable.given
