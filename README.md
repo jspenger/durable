@@ -1,4 +1,7 @@
-# Durable 🎄
+# Durable
+
+> [!IMPORTANT]
+> This project has moved to [jspenger/durable-actor](https://github.com/jspenger/durable-actor) and is no longer maintained.
 
 <!-- [![Build Status](https://github.com/jspenger/durable/actions/workflows/build-test.yaml/badge.svg)](https://github.com/jspenger/durable/actions/workflows/build-test.yaml) -->
 <!-- [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/jspenger/durable/blob/main/LICENSE) -->
