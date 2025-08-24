@@ -17,7 +17,6 @@ Create and run durable and fault tolerant workflows with a simple API based on l
 ```scala
 import spores.default.*
 import spores.default.given
-import spores.jvm.*
 
 import durable.*
 import durable.given

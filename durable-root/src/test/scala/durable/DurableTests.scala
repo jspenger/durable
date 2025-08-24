@@ -26,7 +26,7 @@ class DurableTests:
   @Test
   def testWorkflow(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
       test.complete(1)
     }}
     // format: on
@@ -36,8 +36,8 @@ class DurableTests:
   @Test
   def testFuture(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
-      DFuture.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
+      DFuture.apply { Spore.apply0 {
         test.complete(1)
       }}
     }}
@@ -48,10 +48,10 @@ class DurableTests:
   @Test
   def testFutureOnComplete(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
-      DFuture.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
+      DFuture.apply { Spore.apply0 {
         ()
-      }}.onComplete { Spore.apply { _ =>
+      }}.onComplete { Spore.apply0 { _ =>
         test.complete(2)
       }}
     }}
@@ -62,10 +62,10 @@ class DurableTests:
   @Test
   def testFutureMap(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
-      DFuture.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
+      DFuture.apply { Spore.apply0 {
         1
-      }}.map { Spore.apply { i =>
+      }}.map { Spore.apply0 { i =>
         test.complete(i + 1)
       }}
     }}
@@ -76,10 +76,10 @@ class DurableTests:
   @Test
   def testFutureFlatMap(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
-      DFuture.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
+      DFuture.apply { Spore.apply0 {
         1
-      }}.flatMap { Spore.apply { i =>
+      }}.flatMap { Spore.apply0 { i =>
         DFuture.apply { Spore.applyWithEnv(i) { i =>
           test.complete(i + 1)
         }}
@@ -92,14 +92,14 @@ class DurableTests:
   @Test
   def testFutureZip(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
-      val f1 = DFuture.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
+      val f1 = DFuture.apply { Spore.apply0 {
         1
       }}
-      val f2 = DFuture.apply { Spore.apply {
+      val f2 = DFuture.apply { Spore.apply0 {
         2
       }}
-      f1.zip(f2).map { Spore.apply { (i1, i2) =>
+      f1.zip(f2).map { Spore.apply0 { (i1, i2) =>
         test.complete(i1 + i2)
       }}
     }}
@@ -110,9 +110,9 @@ class DurableTests:
   @Test
   def testPromiseTryComplete(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
       val promise = DPromise.apply[Int]()
-      promise.future.map { Spore.apply { i =>
+      promise.future.map { Spore.apply0 { i =>
         test.complete(i + 1)
       }}
       promise.tryComplete(Success(1))
@@ -124,7 +124,7 @@ class DurableTests:
   @Test
   def testPromiseIsCompleted(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
       val promise = DPromise.apply[Int]()
       promise.future.onComplete { Spore.applyWithEnv(promise) { promise => i =>
         if promise.isCompleted && i.isSuccess then
@@ -139,7 +139,7 @@ class DurableTests:
   @Test
   def testPromiseIsCompletedFailure(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
       val promise = DPromise.apply[Int]()
       promise.future.onComplete { Spore.applyWithEnv(promise) { promise => i =>
         if promise.isCompleted && i.isFailure then
@@ -154,12 +154,12 @@ class DurableTests:
   @Test
   def testFutureWithPromiseEnv(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
       val promise = DPromise.apply[Int]()
       DFuture.apply { Spore.applyWithEnv(promise) { promise =>
         promise.tryComplete(Success(1))
       }}
-      promise.future.map { Spore.apply { i =>
+      promise.future.map { Spore.apply0 { i =>
         test.complete(i + 1)
       }}
     }}
@@ -170,7 +170,7 @@ class DurableTests:
   @Test
   def testFutureWithEnv(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
       DFuture.apply { Spore.applyWithEnv(1) { i =>
         test.complete(i + 1)
       }}
@@ -182,7 +182,7 @@ class DurableTests:
   @Test
   def testFutureWithTuple2Env(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
       DFuture.apply { Spore.applyWithEnv((1, 2)) { (i1, i2) =>
         test.complete(i1 + i2)
       }}
@@ -194,7 +194,7 @@ class DurableTests:
   @Test
   def testFutureWithTuple3Env(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
       DFuture.apply { Spore.applyWithEnv((1, 2, 3)) { (i1, i2, i3) =>
         test.complete(i1 + i2 + i3)
       }}
@@ -206,12 +206,12 @@ class DurableTests:
   @Test
   def testFutureWithFutureEnv(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
-      val f1 = DFuture.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
+      val f1 = DFuture.apply { Spore.apply0 {
         1
       }}
       DFuture.apply { Spore.applyWithEnv(f1) { f1 =>
-        f1.map { Spore.apply { i =>
+        f1.map { Spore.apply0 { i =>
           test.complete(i + 1)
         }}
       }}
@@ -223,11 +223,11 @@ class DurableTests:
   @Test
   def testPromiseNested(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
       val p = DPromise.apply[Int]()
       p.tryComplete(Success(5))
       val spore = Spore.applyWithEnv[((Int, Int, DPromise[Int])), DExecutionContext ?=> Unit](1, 2, p) { (_, _, p) =>
-        p.future.onComplete { Spore.apply { x => test.complete(x.get) }}
+        p.future.onComplete { Spore.apply0 { x => test.complete(x.get) }}
       }
       DFuture.apply { spore }
     }}
@@ -238,11 +238,11 @@ class DurableTests:
   @Test
   def testPromiseNestedNested(): Unit =
     // format: off
-    val wf = DWorkflow.apply { Spore.apply {
+    val wf = DWorkflow.apply { Spore.apply0 {
       val p = DPromise.apply[Int]()
       p.tryComplete(Success(5))
       val spore = Spore.applyWithEnv[((Int, Int, DPromise[Int])), DExecutionContext ?=> Unit](1, 2, p) { (_, _, p) =>
-        p.future.onComplete { Spore.apply { x => test.complete(x.get) }}
+        p.future.onComplete { Spore.apply0 { x => test.complete(x.get) }}
       }
       val spore2 = Spore.applyWithEnv(spore) { spore => (_: DExecutionContext) ?=>
         DFuture.apply { spore }

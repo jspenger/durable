@@ -6,7 +6,6 @@ import java.nio.channels.*
 
 import spores.default.*
 import spores.default.given
-import spores.jvm.*
 
 import durable.*
 import durable.given
@@ -115,7 +114,7 @@ object EchoServer:
   }
 
   val workflow = DWorkflow {
-    Spore.apply {
+    Spore.apply0 {
       listen(List.empty)
     }
   }

@@ -2,7 +2,6 @@ package durable.example
 
 import spores.default.*
 import spores.default.given
-import spores.jvm.*
 
 import durable.*
 import durable.given
@@ -11,8 +10,8 @@ object Fibonacci {
   // Option 1:
   // format: off
   def fib(n: Int)(using DExecutionContext): DFuture[Int] = n match
-    case 0 => DFuture { Spore.apply { 0 } }
-    case 1 => DFuture { Spore.apply { 1 } }
+    case 0 => DFuture { Spore.apply0 { 0 } }
+    case 1 => DFuture { Spore.apply0 { 1 } }
     case _ =>
       fib(n - 1).flatMap { Spore.applyWithEnv(n) { n => n1 =>
         fib(n - 2).map { Spore.applyWithEnv(n1) {  n1 => n2 =>
@@ -24,12 +23,12 @@ object Fibonacci {
   // // Option 2:
   // // format: off
   // def fib(n: Int)(using DExecutionContext): DFuture[Int] = n match
-  //   case 0 => DFuture { Spore.apply { 0 } }
-  //   case 1 => DFuture { Spore.apply { 1 } }
+  //   case 0 => DFuture { Spore.apply0 { 0 } }
+  //   case 1 => DFuture { Spore.apply0 { 1 } }
   //   case _ =>
   //     val f1 = fib(n - 1)
   //     val f2 = fib(n - 2)
-  //     f1.zip(f2).map { Spore.apply { (n1, n2) =>
+  //     f1.zip(f2).map { Spore.apply0 { (n1, n2) =>
   //       n1 + n2
   //     }}
   // format: on

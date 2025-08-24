@@ -2,7 +2,6 @@ package durable.example
 
 import spores.default.*
 import spores.default.given
-import spores.jvm.*
 
 import durable.*
 import durable.given

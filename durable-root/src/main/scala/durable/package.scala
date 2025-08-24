@@ -4,7 +4,6 @@ import upickle.default.*
 
 import spores.default.*
 import spores.default.given
-import spores.jvm.*
 
 /** Durable and fault tolerant computation library for Scala 3 with workflows
   * and futures.
@@ -13,7 +12,6 @@ import spores.jvm.*
   *   {{{
   * import spores.default.*
   * import spores.default.given
-  * import spores.jvm.*
   * import durable.*
   * import durable.given
   *
@@ -97,5 +95,10 @@ package object durable {
   )
 
   given try_rw[T](using t_rw: PRW[T]): PRW[Try[T]] = Spore.apply { (t: RW[T]) ?=> summon[RW[Try[T]]]}.withCtx2(t_rw)
+
+  extension (sporeCompanion: Spore.type) {
+    /** Temporary fix for https://github.com/phaller/spores3/issues/30 */
+    inline def apply0[T](inline body: T): Spore[T] = Spore.apply { body }
+  }
 
 }

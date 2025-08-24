@@ -1,3 +1,9 @@
+.PHONY: build
+
+build:
+	sbt -v compile
+	sbt -v test:compile
+
 .PHONY: clean
 
 clean:
@@ -18,12 +24,6 @@ clean:
 clean-json:
 	find . -name "*.json" | xargs rm -fr
 
-.PHONY: build
-
-build:
-	sbt -v compile
-	sbt -v test:compile
-
 .PHONY: test
 
 test:
@@ -36,16 +36,11 @@ doc:
 
 .PHONY: example-runAll
 
-EXAMPLE_MAIN_PATHS = durable.example.Fibonacci \
-	durable.example.HelloWorld \
-	durable.example.PingPong \
-	durable.example.Random
-
 example-runAll:
-	set -e; \
-	for class in $(EXAMPLE_MAIN_PATHS); do \
-		sbt -v "example/runMain $$class"; \
-	done
+	sbt -v "example/runMain durable.example.Fibonacci"
+	sbt -v "example/runMain durable.example.HelloWorld"
+	sbt -v "example/runMain durable.example.PingPong"
+	sbt -v "example/runMain durable.example.Random"
 
 .PHONY: scalafmt
 
@@ -63,11 +58,9 @@ scalafmtCheck:
 
 sandbox:
 	rm -rf .sandbox
-	mkdir -p .sandbox
 	rsync -a . .sandbox --exclude='.sandbox'
-	cd .sandbox \
-		&& make clean \
-		&& make build \
-		&& make test \
-		&& make example-runAll \
-		&& make scalafmtCheck
+	cd .sandbox && $(MAKE) clean
+	cd .sandbox && $(MAKE) build
+	cd .sandbox && $(MAKE) test
+	cd .sandbox && $(MAKE) example-runAll
+	cd .sandbox && $(MAKE) scalafmtCheck

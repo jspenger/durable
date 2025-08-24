@@ -2,7 +2,6 @@ package durable.example
 
 import spores.default.*
 import spores.default.given
-import spores.jvm.*
 
 import durable.*
 import durable.given
@@ -12,10 +11,10 @@ object HelloWorld {
 
   def main(args: Array[String]): Unit = {
 
-    val workflow = DWorkflow.apply { Spore.apply {
-      DFuture.apply { Spore.apply {
+    val workflow = DWorkflow.apply { Spore.apply0 {
+      DFuture.apply { Spore.apply0 {
         ctx.log("Hello, ")
-      }}.onComplete { Spore.apply { _ =>
+      }}.onComplete { Spore.apply0 { _ =>
         ctx.log("World!")
       }}
     }}

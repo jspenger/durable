@@ -2,7 +2,6 @@ package durable.example
 
 import spores.default.*
 import spores.default.given
-import spores.jvm.*
 
 import durable.*
 import durable.given
@@ -13,12 +12,12 @@ object Random {
 
   inline def slowComputation: Int = { Thread.sleep(SLEEP_TIME); scala.util.Random.nextInt(100) }
 
-  val workflow = DWorkflow.apply { Spore.apply {
+  val workflow = DWorkflow.apply { Spore.apply0 {
       ctx.log("Starting workflow")
 
       val num1 = slowComputation
 
-      val fut1 = DFuture.apply { Spore.apply {  
+      val fut1 = DFuture.apply { Spore.apply0 {  
           slowComputation
       }}
 

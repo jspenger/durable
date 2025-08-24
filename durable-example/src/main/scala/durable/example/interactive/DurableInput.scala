@@ -2,7 +2,6 @@ package durable.example.interactive
 
 import spores.default.*
 import spores.default.given
-import spores.jvm.*
 
 import durable.*
 import durable.given
@@ -29,7 +28,7 @@ object DurableInput:
 
   def main(args: Array[String]): Unit =
     // format: off
-    val workflow = DWorkflow { Spore.apply {
+    val workflow = DWorkflow { Spore.apply0 {
       step("nil")
     }}
     // format: on

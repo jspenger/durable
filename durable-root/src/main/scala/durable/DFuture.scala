@@ -6,7 +6,6 @@ import upickle.default.*
 
 import spores.default.*
 import spores.default.given
-import spores.jvm.*
 
 import durable.*
 import durable.given
