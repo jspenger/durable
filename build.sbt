@@ -2,7 +2,7 @@
 val scala33               = "3.3.6"
 val junitInterfaceVersion = "0.11"
 val upickleVersion        = "3.3.1"
-val sporesVersion         = "0.2.0-SNAPSHOT"
+val sporesVersion         = "0.2.0"
 
 ThisBuild / organization     := "com.jspenger"
 ThisBuild / organizationName := "Jonas Spenger"

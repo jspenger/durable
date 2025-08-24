@@ -22,7 +22,7 @@ jobs:
       uses: sbt/setup-sbt@v1
     - name: Setup dependencies
       run: |
-        git clone https://github.com/phaller/spores3.git
+        git clone --branch v0.2.0 https://github.com/phaller/spores3.git
         cd spores3
         sbt publishLocal
     - name: Build
